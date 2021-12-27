@@ -1,0 +1,78 @@
+.button {
+	-fx-font-size: 14px;
+	-fx-background-color: #c5b07d;
+    -fx-font-family: 'Verdana';
+}
+
+.button2 {
+	-fx-font-size: 14px;
+	/* -fx-font-weight: bold; */
+	-fx-background-color: #5b9659;
+    -fx-font-family: 'Verdana';
+}
+
+.button1 {
+	-fx-font-size: 11px;
+	/* -fx-font-weight: bold; */
+	-fx-background-color: #4c469b;
+    -fx-font-family: 'Verdana';
+}
+
+.betOption {
+	-fx-font-size: 11px;
+	-fx-background-color: #d2cce5;
+	/* -fx-font-weight: bold; */
+	-fx-background-color: #458d8d;
+    -fx-font-family: 'Verdana';
+}
+
+.vbox {
+	-fx-background-color: rgb(49, 49, 49);
+    -fx-font-family: 'Verdana';
+}
+
+.text1 {
+	-fx-font-size: 14px;
+	/* -fx-font-weight: bold; */
+	-fx-background-color: #ffffff;
+    -fx-font-family: 'Verdana';
+}
+
+.text2 {
+	-fx-font-size: 14px;
+	-fx-background-color: #f8f8f8ea;
+    -fx-font-family: 'Verdana';
+    -fx-text-fill: black;
+}
+
+.border {
+	-fx-background-color: rgb(49, 49, 49);
+}
+
+.list1 {
+    -fx-font-family: 'Verdana';
+	-fx-background-color: rgb(49, 49, 49);
+}
+
+.label1 {
+	-fx-background-color: rgb(49, 49, 49);
+    -fx-font-family: 'Verdana';
+	-fx-font-size: 13px;
+    -fx-text-fill: white;
+}
+
+.label2 {
+	-fx-background-color: rgb(49, 49, 49);
+    -fx-font-family: 'Verdana';
+	-fx-font-weight: bold;
+	-fx-font-size: 15px;
+    -fx-text-fill: white;
+}
+
+.labelTitle {
+	-fx-background-color: rgb(49, 49, 49);
+    -fx-font-family: 'Verdana';
+	-fx-font-weight: bold;
+	-fx-font-size: 20px;
+    -fx-text-fill: white;
+}
