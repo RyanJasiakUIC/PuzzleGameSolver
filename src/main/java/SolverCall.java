@@ -19,6 +19,7 @@ public class SolverCall implements Callable<ArrayList<NodE>> {
         max = 0;
         solutionPath = null;
         int arr[] = Coordinate.getArrayOfVals(coords);
+        for (int i : arr) System.out.print(i + ", ");
         NodE startState = new NodE(arr);
         startState.setDepth(0);
         DB_Solver2 dbs = new DB_Solver2(startState, "heuristicOne");
@@ -26,16 +27,6 @@ public class SolverCall implements Callable<ArrayList<NodE>> {
         if (solution != null) {
             solutionPath = dbs.getSolutionPath(solution);
             max = solutionPath.size();
-            // for (NodE n : solutionPath) {
-            //     for (int i = 0; i < 16; i++) {
-            //         System.out.printf("%4d ", n.getKey()[i]);
-            //         if(i == 3 || i == 7 || i == 11)
-            //             System.out.print("\n");
-            //     }
-            //     System.out.print("\n\n");
-            // }
-            // System.out.print("\n");
-
         }
     }
 

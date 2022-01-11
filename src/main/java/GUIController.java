@@ -40,6 +40,8 @@ public class GUIController implements Initializable {
                      "6 4 1 3 0 15 13 5 7 10 11 9 8 12 2 14",
                      "0 12 4 3 6 7 1 5 10 13 15 14 8 2 9 11"};
 
+    private final int max_frames = 20;
+
     GameInterface gi;
 
     ArrayList<NodE> states;
@@ -61,6 +63,8 @@ public class GUIController implements Initializable {
     Coordinate initial_coords[];
 
     SolverCall solvercall;
+
+    boolean is_solution_being_presented;
 
     @FXML
     private ResourceBundle resources;
@@ -99,6 +103,9 @@ public class GUIController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        boardGP.setHgap(0);
+        boardGP.setVgap(0);
+        is_solution_being_presented = false;
         seeSol.setDisable(true);
         gi = new GameInterface();
         gameSelectors = new ArrayList<>();
@@ -112,7 +119,6 @@ public class GUIController implements Initializable {
             selectorHBox2.getChildren().add(be);
             gameSelectors.add(be);
         }
-        
         initial_coords = new Coordinate[16];
         double d = 20.0;
         double d2 = 10.0;
@@ -121,9 +127,7 @@ public class GUIController implements Initializable {
         boardGP.setPadding(new Insets(d, d, d, d));
         boardGP.setHgap(d2);
         boardGP.setVgap(d2);
-        // int tempboard[] = gi.stringToIntArray("0 14 13 12 15 9 5 8 11 7 4 1 3 10 6 2");
         int tempboard[] = gi.stringToIntArray("0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15");
-        System.out.println("BRUH");
         int c = 0;
         for (int i = 0; i < 4; i++) {   
             for (int j = 0; j < 4; j++) {
@@ -132,7 +136,6 @@ public class GUIController implements Initializable {
                 Button b = gameButton(i, j, tempboard[c++]);
                 b.setDisable(true);
                 buttons[i][j] = b;
-                System.out.println(i + " : " + j);
                 boardGP.add(b, j, i);
             }
         }
@@ -141,22 +144,19 @@ public class GUIController implements Initializable {
 
 
     void gameSelectorAction(int n) {
-        System.out.println("Game Selector");
         for (Button b: gameSelectors)
             b.setDisable(true);
         for (Button[] _b: buttons)
             for (Button b: _b)
                 b.setDisable(false);
         int tempboard[] = gi.stringToIntArray(games[n]);
-        System.out.println("BRUH");
         int c = 0;
         for (int i = 0; i < 4; i++) {   
             for (int j = 0; j < 4; j++) {
-                initial_coords[c] = new Coordinate(i, j, c);
+                initial_coords[c] = new Coordinate(i, j, tempboard[c]);
                 Button b = gameButton(i, j, tempboard[c++]);
                 b.setDisable(false);
                 buttons[i][j] = b;
-                System.out.println(i + " : " + j);
                 boardGP.add(b, j, i);
             }
         }
@@ -182,7 +182,7 @@ public class GUIController implements Initializable {
     }
 
     void gameButtonAction(int r, int c) {
-        // System.out.println("r: " + r + " c: " + c);
+        if (is_solution_being_presented) return;
         int _r = r, _c = c;
         if (r+1 < 4 && buttons[r+1][c].getText().equals(""))
             _r++;
@@ -192,9 +192,7 @@ public class GUIController implements Initializable {
             _c++;
         else if (c-1 > -1 && buttons[r][c-1].getText().equals(""))
             _c--;
-        // System.out.println("_r: " + _r + " _c: " + _c);
         if (r == _r && c == _c) {
-            // System.out.println("Returning!!");
             return;
         }
         swapCoordinates(r, c, _r, _c);
@@ -207,10 +205,7 @@ public class GUIController implements Initializable {
     boolean puzzleIsComplete() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                // System.out.println("button text: " + buttons[i][j].getText() + " complete text: " + complete[i][j]);
-                // if (!(Integer.parseInt(buttons[i][j].getText().toString()) == Integer.parseInt(complete[i][j]))) {
                 if (!(buttons[i][j].getText().toString().equals(complete[i][j]))) {
-                    // System.out.println("Returning false :(");
                     return false;
                 }
             }
@@ -220,10 +215,11 @@ public class GUIController implements Initializable {
 
     public void startNewGame(ActionEvent e) throws IOException {
         seeSol.setDisable(true);
-        System.out.println("BRUH");
-        for (Button[] _b : buttons)
-            for (Button b : _b)
-                b.setDisable(true);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                buttons[i][j].setDisable(true);
+            }
+        }
         for (Button b : gameSelectors)
             b.setDisable(false);
     }
@@ -233,58 +229,34 @@ public class GUIController implements Initializable {
     }
 
     void setButtons(ArrayList<Integer> n) {
-        for (int i = 0; i < 16; i++) {
-            System.out.printf("%4d ", n.get(i));
-            if(i == 3 || i == 7 || i == 11)
-                System.out.print("\n");
-        }
         String temp = "";
-        System.out.print("\n\n");
         int c = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                // try {
-                    System.out.print(n.get(c) + " ");
-                    // temp = (n.get(c) == 0) ? "" : Integer.toString(n.get(c));
-                    if (n.get(c) == 0) {
-                        temp = "";
-                        // System.out.println("EMPTY STRING");
-                    } else {
-                        temp = Integer.toString(n.get(c));
-                        // System.out.println("NUMBER");
-                    }
-                    buttons[i][j].setText(temp);
-                    c++;
-                    // System.out.println("IN HERE????");
-                // } catch (Exception e) {
-                //     // System.out.println("BRUH WY IS IT NULL " + e.getsage());
-                // }
+                if (n.get(c) == 0) {
+                    temp = "";
+                } else {
+                    temp = Integer.toString(n.get(c));
+                }
+                buttons[i][j].setText(temp);
+                c++;
             }
-            System.out.println("");
         }
     }
 
     void printNodE(NodE n) {
-        System.out.println("*** PRINTING NodE ***");
         int z = 0;
         for (int i : n.getKey()) {
-            System.out.print(i + " ");
-            if (++z%4 == 0) {
-                System.out.println("");
+            if (++z%4 == 0)
                 z = 0;
-            }
         }
-        System.out.println("*** DONE PRINTING NodE ***");
     }
 
     ArrayList<Integer> NodEtoArray(NodE n) {
-        System.out.println("*** PRINTING NodE ***");
         ArrayList<Integer> al = new ArrayList<>();
-        for (int i : n.getKey()) {
-            System.out.print(i + " ");
+        int k[] = n.getKey();
+        for (int i : k)
             al.add(i);
-        }
-        System.out.println("*** DONE PRINTING NodE ***");
         return al;
     }
 
@@ -294,24 +266,22 @@ public class GUIController implements Initializable {
         solvercall = new SolverCall(initial_coords);
 		ex = Executors.newFixedThreadPool(1);
         future = ex.submit(solvercall);
-        // Thread _t = new Thread(new MyRunnable(buttons, initial_coords, future));
-        System.out.println("Starting new thread....");
-        // _t.start();
+        System.out.println("Starting new thread...");
         Thread t = new Thread(() -> {
             boolean notFinished = true;
             states = null;
             while (notFinished) {
-                System.out.println("Not finished!");
                 try {
                     states = future.get();
                     if (states != null) {
-                        System.out.println("Here bruh!!!!!!!");
                         notFinished = false;
                         int count = 0;
                         states_to_display = new ArrayList<>();
                         for (NodE n : states) {
-                            states_to_display.add(NodEtoArray(n));
+                            ArrayList<Integer> al = NodEtoArray(n);
+                            states_to_display.add(al);
                         }
+                        System.out.println("states_to_display size: " + states_to_display.size());
                         seeSol.setDisable(false);
                     }
                 } catch (Exception _e) {}
@@ -320,80 +290,23 @@ public class GUIController implements Initializable {
         t.start();
     }
 
-    //
-    // RIP ME
-    //
-    // Couldn't make it animate ..... :(
-    //
+    public void displaySolutionRecursively(int count, int index) {
+        PauseTransition pause = new PauseTransition(Duration.millis(80));
+        pause.setOnFinished(e -> {
+            setButtons(states_to_display.get(index));
+            if (index+1 < count) {
+                displaySolutionRecursively(count, index+1);
+            } else {
+                is_solution_being_presented = false;
+            }
+        });
+        pause.play();
+    }
+
     public void seeSolution(ActionEvent e) throws IOException {
-        int count = 0;
-        int size = states_to_display.size();
-        for (int i = 0; i < size; i++) {
-            setButtons(states_to_display.get(i));
-            // // n.toString();
-            // // Platform.runLater(new Runnable() {
-            // //     @Override
-            // //     public void run() {
-            //         setButtons(states_to_display.get(i));
-            // //     }
-            // // });
-            // PauseTransition pause = new PauseTransition(Duration.seconds(2));
-            // pause.setOnFinished(_e -> {
-            //     // final int k = 0;
-            //     setButtons(states_to_display.get(0));
-            //     System.out.println("Printing Array:::");
-            //     System.out.print(states_to_display.get(0));
-            //     System.out.println("done!");
-            // });
-            // pause.play();
-            // pause = new PauseTransition(Duration.seconds(2));
-            // // PauseTransition pause = new PauseTransition(Duration.seconds(2));
-            // count++;
-            // if (count == size || count == 10) break;
-            // pause.setOnFinished(_e -> {
-            //     // final int k = 0;
-            //     setButtons(states_to_display.get(1));
-            //     System.out.println("Printing Array:::");
-            //     System.out.print(states_to_display.get(1));
-            //     System.out.println("done!");
-            // });
-            // pause.play();
-            // pause = new PauseTransition(Duration.seconds(2));
-            // count++;
-            // if (count == size || count == 10) break;
-            // pause.setOnFinished(_e -> {
-            //     // final int k = 0;
-            //     setButtons(states_to_display.get(2));
-            //     System.out.println("Printing Array:::");
-            //     System.out.print(states_to_display.get(2));
-            //     System.out.println("done!");
-            // });
-            // pause.play();
-            // pause = new PauseTransition(Duration.seconds(2));
-            // count++;
-            // if (count == size || count == 10) break;
-            // pause.setOnFinished(_e -> {
-            //     // final int k = 0;
-            //     setButtons(states_to_display.get(3));
-            //     System.out.println("Printing Array:::");
-            //     System.out.print(states_to_display.get(3));
-            //     System.out.println("done!");
-            // });
-            // pause.play();
-            // pause = new PauseTransition(Duration.seconds(2));
-            // count++;
-            // if (count == size || count == 10) break;
-            // pause.setOnFinished(_e -> {
-            //     // final int k = 0;
-            //     setButtons(states_to_display.get(4));
-            //     System.out.println("Printing Array:::");
-            //     System.out.print(states_to_display.get(4));
-            //     System.out.println("done!");
-            // });
-            // pause.play();
-            // pause = new PauseTransition(Duration.seconds(2));
-            if (++count == 10) break;
-        }
-        System.out.print("\n");
+        is_solution_being_presented = true;
+        int size = (states_to_display.size() > max_frames) ? max_frames : states_to_display.size();
+        System.out.println("Size: " + size);
+        displaySolutionRecursively(states_to_display.size(), 0);
     }
 }
