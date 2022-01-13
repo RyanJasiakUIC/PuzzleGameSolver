@@ -16,3 +16,6 @@ If you can't solve, click one of the heuristic algorithms to solve it for you! O
 
 ### To Run:
 - `mvn compile exec:java`
+
+### Video demo:
+https://www.youtube.com/watch?v=tnYJggDYZIQ
